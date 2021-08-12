@@ -2,6 +2,10 @@
 #  William junqueira e Anna clara lelis
 
 from tkinter import *
+from pygame import *
+import mysql.connector
+
+
 
 
 bt_config = {
@@ -13,6 +17,8 @@ class Urna():
     def __init__(self, master):
         self.master = master
 
+        
+        
         #  Frames
         self.displayframe = Frame(self.master, width=450, height=500)
         self.keyframe = Frame(self.master, width=450, height=500)
@@ -60,31 +66,105 @@ class Urna():
         
         self.entry1.grid(row=0, column=1, pady=20) 
         self.entry2.grid(row=0, column=2, pady=20) 
+
+ 
+#  Labels       
+        self.photo_label = Label(self.displayframe)
+        self.photo_label.grid(row=1, column=0, sticky='we')
         
+        self.nome_label = Label(self.displayframe, font='arial 12')
+        self.nome_label.grid(row=1, column=1)
+        
+   
        
         
-#  Metodos       
-    def bt_press(self, bt,):
+#  Metodos   
+    
+    def bt_press(self, bt,):  #  Metodo para quando um botão numerico for pressionado
 
             if self.entry1.get() == '': self.entry1.insert(0, f'{bt}')                    
             else: self.entry2.insert(0, f'{bt}')    
-                
+            self.checkCandidate()
+     
+            
+    def checkCandidate(self):
+        
+        if  self.entry1.get() == '' or self.entry2.get() == '': 
+            return
+      
+        self.n = self.entry1.get() + self.entry2.get() 
+        
+        if self.n == '42':  
+            self.img = PhotoImage(file='42100.png')
+            self.nome_label['text'] = 'Douglas Adams'
+        
+        elif self.n == '70':
+            self.img = PhotoImage(file='70100.png')
+            self.nome_label['text'] = 'J. K. Rowling'
+                  
+        elif self.n == '50':
+            self.img = PhotoImage(file='50100.png')
+            self.nome_label['text'] = 'Rick Riordan'
     
-    def branco(self):
+        else: 
+            self.img = ''
+            self.nome_label['text'] = 'Voto nulo'
+        self.photo_label['image'] = self.img
+        self.photo_label.image = self.img
+            
+            
+    def branco(self):  #  Metodo pora quando o botão branco for pressionado
          pass
+  
     
-    def corrige(self):
+    def corrige(self):  #  Metodo pora quando o botão corrige for pressionado
         self.entry1.delete(0)
         self.entry2.delete(0)
+        self.photo_label['image'] = ''
+        self.nome_label['text'] = ''
+        
 
-    def confirma(self):
+    def confirma(self):  #  Metodo pora quando o botão confirmar for pressionado
+        
+        if self.n == '42': self.addVoto(1)
+        if self.n == '70': self.addVoto(2)
+        if self.n == '50': self.addVoto(3)
+        
+        
+        
+        mixer.init()
+        mixer.music.load('som.mp3')
+        mixer.music.play()
+        self.fim()
+     
+        
+    def conexãoBd(self): # Metodo para fazer a ligação com o banco de dados
+        try:
+            self.conn = mysql.connector.connect(host = "127.0.0.1", user = "root", database = "urna")      
+        except: 
+            print('Erro de conexão')
+     
+        
+    def addVoto(self, candidato): 
+        
+        self.conexãoBd()
+          
+        if candidato == 1:
+    
+            cursor = self.conn.cursor()
+            cursor.execute(f'UPDATE candidatos SET qtd_votos={1} WHERE id={1};')
+       
+               
+        elif candidato == 2:
+            pass
+        
+        elif candidato == 3:
+            pass
+    
+        
+        
+    def fim(self): 
         pass
-    
-    
-        
-        
-        
-        
         
         
     
