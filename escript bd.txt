@@ -1,0 +1,10 @@
+create database urna;
+use urna;
+
+create table candidatos(id int primary key, nome varchar(50), numero_eleitoral int, qtd_votos int);
+
+insert into candidatos(id, nome, numero_eleitoral, qtd_votos) values (1, "Douglas Adams", 42, 0);
+insert into candidatos(id, nome, numero_eleitoral, qtd_votos) values (2, "J. K. Rowling", 70, 0);
+insert into candidatos(id, nome, numero_eleitoral, qtd_votos) values (3, "Rick Riordan", 50, 0);
+
+select * from candidatos
